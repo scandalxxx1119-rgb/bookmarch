@@ -28,7 +28,11 @@
       },
       "package": "com.bookmarch.app",
       "edgeToEdgeEnabled": false,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -53,6 +57,13 @@
     ],
     "experiments": {
       "typedRoutes": false
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ad0fcf9d-5cf3-414f-8876-1f112858599f"
+      }
+    },
+    "owner": "pikkaw2"
   }
 }
