@@ -1,0 +1,30 @@
+import { Course } from '../../types/course';
+
+export const SHINKANSEN_COURSE: Course = {
+  id: 'shinkansen',
+  name: '新幹線 東京→博多',
+  description: '日本を横断する1,175kmの大冒険！',
+  difficulty: 'intermediate',
+  totalDistanceKm: 1174.9,
+  iconImage: require('../../assets/courses/course-shinkansen.png'),
+  color: '#0072BC',
+  isLoop: false,
+  stations: [
+    { id: 101, name: '東京',   latitude: 35.6812, longitude: 139.7671, distanceFromStart:    0.0, isLandmark: true,  description: '旅の始まり、日本の首都'         },
+    { id: 102, name: '品川',   latitude: 35.6284, longitude: 139.7387, distanceFromStart:    6.8, isLandmark: false, description: '東京の南の玄関口'               },
+    { id: 103, name: '新横浜', latitude: 35.5075, longitude: 139.6176, distanceFromStart:   28.8, isLandmark: false, description: '横浜ラーメンの聖地'             },
+    { id: 104, name: '小田原', latitude: 35.2564, longitude: 139.1547, distanceFromStart:   83.9, isLandmark: false, description: 'かまぼこと北条氏の城下町'       },
+    { id: 105, name: '熱海',   latitude: 35.1042, longitude: 139.0776, distanceFromStart:  104.6, isLandmark: false, description: '温泉と海のまち'                 },
+    { id: 106, name: '静岡',   latitude: 34.9717, longitude: 138.3889, distanceFromStart:  180.2, isLandmark: true,  description: '富士山おひざもとの茶どころ'     },
+    { id: 107, name: '浜松',   latitude: 34.7038, longitude: 137.7349, distanceFromStart:  257.1, isLandmark: false, description: 'うなぎとものづくりのまち'       },
+    { id: 108, name: '名古屋', latitude: 35.1709, longitude: 136.8815, distanceFromStart:  366.0, isLandmark: true,  description: 'ひつまぶしの都、日本の中心'     },
+    { id: 109, name: '京都',   latitude: 34.9858, longitude: 135.7588, distanceFromStart:  476.3, isLandmark: true,  description: '千年の古都'                     },
+    { id: 110, name: '新大阪', latitude: 34.7334, longitude: 135.5001, distanceFromStart:  552.6, isLandmark: true,  description: '食いだおれの街への入口'         },
+    { id: 111, name: '新神戸', latitude: 34.6885, longitude: 135.1967, distanceFromStart:  589.5, isLandmark: false, description: '港町とビーフの街'               },
+    { id: 112, name: '岡山',   latitude: 34.6655, longitude: 133.9183, distanceFromStart:  732.9, isLandmark: true,  description: '桃太郎のふるさと'               },
+    { id: 113, name: '広島',   latitude: 34.3963, longitude: 132.4755, distanceFromStart:  894.2, isLandmark: true,  description: '平和の都市、お好み焼きの聖地'   },
+    { id: 114, name: '新山口', latitude: 34.1712, longitude: 131.9505, distanceFromStart: 1027.0, isLandmark: false, description: '維新の志士たちの地'             },
+    { id: 115, name: '小倉',   latitude: 33.8843, longitude: 130.8825, distanceFromStart: 1108.3, isLandmark: false, description: '九州の玄関口'                   },
+    { id: 116, name: '博多',   latitude: 33.5902, longitude: 130.4207, distanceFromStart: 1174.9, isLandmark: true,  description: 'ゴール！とんこつラーメンの本場' },
+  ],
+};

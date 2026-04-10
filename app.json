@@ -1,30 +1,58 @@
 {
   "expo": {
-    "name": "BookMarch",
-    "slug": "BookMarch",
-    "version": "1.0.0",
+    "name": "ブックマーチ",
+    "slug": "bookmarch",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
+    "scheme": "bookmarch",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#4A90D9"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.bookmarch.app",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "本のバーコードを読み取って書籍情報を取得するためにカメラを使用します。"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#4A90D9"
       },
-      "edgeToEdgeEnabled": true,
+      "package": "com.bookmarch.app",
+      "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "本のバーコードを読み取って書籍情報を取得するためにカメラを使用します。"
+        }
+      ],
+      "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#4A90D9"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
     }
   }
 }
