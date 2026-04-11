@@ -38,15 +38,8 @@ export default function RootLayout() {
           options={{ animation: 'slide_from_bottom' }}
         />
         <Stack.Screen
-          name="notification-settings"
-          options={{
-            headerShown: true,
-            headerTitle: '通知設定',
-            headerStyle: { backgroundColor: '#4A90D9' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: 'bold' },
-            animation: 'slide_from_right',
-          }}
+          name="onboarding-demo"
+          options={{ gestureEnabled: false, animation: 'slide_from_right' }}
         />
         <Stack.Screen
           name="barcode-scanner"
@@ -87,6 +80,17 @@ export default function RootLayout() {
           options={{
             headerShown: true,
             headerTitle: 'オープンソースライセンス',
+            headerStyle: { backgroundColor: '#4A90D9' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold' },
+            animation: 'slide_from_right',
+          }}
+        />
+        <Stack.Screen
+          name="notification-settings"
+          options={{
+            headerShown: true,
+            headerTitle: '通知設定',
             headerStyle: { backgroundColor: '#4A90D9' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontWeight: 'bold' },

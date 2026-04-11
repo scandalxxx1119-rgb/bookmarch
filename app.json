@@ -15,10 +15,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.bookmarch.app",
-      "buildNumber": "1",
+      "buildNumber": "5",
       "supportsTablet": false,
       "infoPlist": {
-        "NSCameraUsageDescription": "本のバーコードを読み取って書籍情報を取得するためにカメラを使用します。"
+        "NSCameraUsageDescription": "本のバーコードを読み取って書籍情報を取得するためにカメラを使用します。",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -17,6 +18,7 @@ import {
   View,
 } from 'react-native';
 import { ArrivalModal } from '../../components/ArrivalModal';
+import { CompletionModal } from '../../components/CompletionModal';
 import { PAGE_TO_KM } from '../../constants/config';
 import { ALL_COURSES, YAMANOTE_COURSE } from '../../constants/courses/index';
 import { checkNewArrivals } from '../../hooks/useStationArrival';
@@ -29,6 +31,7 @@ import {
 } from '../../services/bookStorage';
 import { BookSearchResult } from '../../services/bookSearchService';
 import { getActiveCourseId } from '../../services/courseStorage';
+import { checkAndRequestReview } from '../../services/reviewService';
 import { shareArrival } from '../../services/shareService';
 import { Book } from '../../types/book';
 import { Course, Station } from '../../types/course';
@@ -72,6 +75,12 @@ export default function RegisterScreen() {
   const [arrivalPassedCount, setArrivalPassedCount]   = useState(0);
   const [arrivalLaps, setArrivalLaps]                 = useState(0);
   const [arrivalIsLapComplete, setArrivalIsLapComplete] = useState(false);
+
+  // 読了モーダル
+  const [completionVisible, setCompletionVisible]     = useState(false);
+  const [completionBook, setCompletionBook]           = useState<Book | null>(null);
+  const [completionNextStation, setCompletionNextStation] = useState<Station | null>(null);
+  const [completionRemainKm, setCompletionRemainKm]   = useState(0);
 
   const loadBooks = useCallback(async (courseId: string) => {
     try {
@@ -143,6 +152,21 @@ export default function RegisterScreen() {
 
       await loadBooks(activeCourse.id);
 
+      // 読了判定
+      if (updatedBook.status === 'finished' && logBook.status === 'reading') {
+        const kmInLap = activeCourse.isLoop
+          ? totalKm % activeCourse.totalDistanceKm
+          : Math.min(totalKm, activeCourse.totalDistanceKm);
+        const next = activeCourse.stations.find((s) => s.distanceFromStart > kmInLap)
+          ?? activeCourse.stations[activeCourse.stations.length - 1];
+        const remain = Math.max(next.distanceFromStart - kmInLap, 0);
+        setCompletionBook(updatedBook);
+        setCompletionNextStation(next);
+        setCompletionRemainKm(remain);
+        setCompletionVisible(true);
+        return;
+      }
+
       const result = await checkNewArrivals(activeCourse.id, activeCourse, pagesBefore, pagesAfter);
 
       if (result.newStations.length > 0) {
@@ -154,11 +178,21 @@ export default function RegisterScreen() {
         setArrivalLaps(lapsAfter);
         setArrivalIsLapComplete(result.isLapComplete);
         setModalVisible(true);
+        checkAndRequestReview(result.uniquePassedCount).catch(() => {});
       } else {
+        // 次の駅情報を計算して表示
+        const kmInLap = activeCourse.isLoop
+          ? totalKm % activeCourse.totalDistanceKm
+          : Math.min(totalKm, activeCourse.totalDistanceKm);
+        const next = activeCourse.stations.find((s) => s.distanceFromStart > kmInLap);
+        const remain = next ? Math.max(next.distanceFromStart - kmInLap, 0) : 0;
         Alert.alert(
-          'きろく完了',
-          `「${logBook.title}」+${actualAdded}ページ（+${(actualAdded * PAGE_TO_KM).toFixed(1)}km）\n` +
-          `${updatedBook.pagesRead}/${updatedBook.totalPages}ページ読了`
+          'きろく完了！',
+          `📖「${logBook.title}」\n` +
+          `+${actualAdded}ページ（+${(actualAdded * PAGE_TO_KM).toFixed(1)}km）\n\n` +
+          (next
+            ? `📍 次の駅「${next.name}」まで\n　 あと ${remain.toFixed(1)} km！`
+            : `${updatedBook.pagesRead}/${updatedBook.totalPages}ページ`)
         );
       }
     } catch {
@@ -257,6 +291,17 @@ export default function RegisterScreen() {
       {/* ─── 読書記録セクション ─── */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>📖 読んだページをきろくする</Text>
+
+        {/* 動機付けバナー */}
+        <View style={styles.motivationBanner}>
+          <Image
+            source={require('../../assets/character/walk-frame1.png')}
+            style={{ width: 32, height: 32 }}
+            resizeMode="contain"
+          />
+          <Text style={styles.motivationText}>1ページでも旅は進みます ✨</Text>
+        </View>
+
         {loading ? null : readingBooks.length === 0 ? (
           <View style={styles.emptyReading}>
             <Text style={styles.emptyReadingText}>
@@ -473,6 +518,21 @@ export default function RegisterScreen() {
         onContinue={() => setModalVisible(false)}
         onShare={handleModalShare}
       />
+
+      {completionBook && completionNextStation && (
+        <CompletionModal
+          visible={completionVisible}
+          book={completionBook}
+          nextStation={completionNextStation}
+          remainKm={completionRemainKm}
+          courseName={activeCourse.name}
+          onRegisterNext={() => {
+            setCompletionVisible(false);
+            setFormExpanded(true);
+          }}
+          onClose={() => setCompletionVisible(false)}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -500,6 +560,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 12,
+  },
+  motivationBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F0F4FF',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+  motivationText: {
+    fontSize: 14,
+    color: THEME,
+    fontWeight: '600',
+    marginLeft: 10,
   },
   emptyReading: {
     backgroundColor: '#fff',
@@ -572,13 +646,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   readingCardBtn: {
-    borderRadius: 20,
-    paddingVertical: 7,
+    borderRadius: 24,
+    paddingVertical: 14,
     alignItems: 'center',
+    shadowColor: THEME,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   readingCardBtnText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'bold',
   },
 

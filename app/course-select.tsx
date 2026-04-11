@@ -73,7 +73,7 @@ export default function CourseSelectScreen() {
   const handleSelect = async (course: Course) => {
     if (course.locked) return;
     await setActiveCourseId(course.id);
-    router.replace('/(tabs)');
+    router.replace('/onboarding-demo');
   };
 
   const allCourses = ALL_COURSES;
