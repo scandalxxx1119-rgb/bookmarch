@@ -39,3 +39,14 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# project root images and temp files
+Gemini_Generated_Image_*
+*.xlsx
+~$*
+.~lock.*
+image0.png
+image1.png
+asi.png
+PHASE*.md
+APP_STORE_SUBMISSION.md
